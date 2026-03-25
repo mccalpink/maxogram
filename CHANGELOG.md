@@ -5,12 +5,21 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-03-25
+
 ### Fixed
 
+- **FilterObject awaitable для async callable-классов** — callable-экземпляры с `async def __call__` без наследования от `Filter` теперь корректно определяются как awaitable (#1)
+- **outer_middleware на event observers** — `propagate_event()` теперь вызывает `wrap_outer_middleware`, outer middleware на `message_created`, `message_callback` и др. работают корректно (#3)
+- **Типы event в документации** — исправлены все примеры: `MessageCreatedUpdate` → `Message`, `MessageCallbackUpdate` → `Callback` (#2)
 - Отправка пустого `{}` тела для POST вместо `None` — исправлен 400 Empty request body при `answer_on_callback`
 - Извлечение event-объектов из Update перед передачей в handlers
 - 5 багов, найденных при тестировании MaxShop: утечка kwargs, парсинг ошибок API и др.
 - 56 предупреждений ruff: неиспользуемые импорты, сортировка импортов, type-checking блоки
+
+### Changed
+
+- **BREAKING:** `Bot.send_message` и 12 других shortcut-методов — аргументы после первого позиционного стали keyword-only (`*`). Вызов `bot.send_message(chat_id, "текст")` теперь даёт `TypeError`, используйте `bot.send_message(chat_id, text="текст")` (#4)
 
 ### Added
 

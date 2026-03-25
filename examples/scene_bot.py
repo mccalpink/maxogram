@@ -23,7 +23,7 @@ from maxogram.fsm.scene.registry import SceneRegistry
 from maxogram.fsm.scene.wizard import WizardScene
 from maxogram.fsm.state import State, StatesGroup
 from maxogram.fsm.storage.memory import MemoryStorage
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 logging.basicConfig(level=logging.INFO)
 
@@ -62,16 +62,16 @@ registry.add(SurveyWizard)
 
 @router.message_created()
 async def cmd_start(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     **kwargs: object,
 ) -> None:
     """Команда /start — вход в сцену анкеты."""
-    text = event.message.body.text
+    text = event.body.text
     if not text or not text.startswith("/start"):
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -83,7 +83,7 @@ async def cmd_start(
 
 @router.message_created()
 async def process_name(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -92,8 +92,8 @@ async def process_name(
     """Шаг 1: получить имя, перейти к возрасту."""
     if raw_state != str(SurveyStates.name):
         return
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -107,7 +107,7 @@ async def process_name(
 
 @router.message_created()
 async def process_age(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -116,8 +116,8 @@ async def process_age(
     """Шаг 2: получить возраст, перейти к подтверждению."""
     if raw_state != str(SurveyStates.age):
         return
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -135,7 +135,7 @@ async def process_age(
 
 @router.message_created()
 async def process_confirm(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -144,8 +144,8 @@ async def process_confirm(
     """Шаг 3: подтверждение — завершить или вернуться назад."""
     if raw_state != str(SurveyStates.confirm):
         return
-    text = (event.message.body.text or "").lower()
-    chat_id = event.message.recipient.chat_id
+    text = (event.body.text or "").lower()
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 

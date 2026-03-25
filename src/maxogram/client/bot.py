@@ -134,6 +134,7 @@ class Bot:
 
     async def edit_my_info(
         self,
+        *,
         name: str | None = None,
         description: str | None = None,
         commands: list[BotCommand] | None = None,
@@ -155,6 +156,7 @@ class Bot:
 
     async def get_chats(
         self,
+        *,
         count: int | None = None,
         marker: int | None = None,
     ) -> ChatList:
@@ -172,6 +174,7 @@ class Bot:
     async def edit_chat(
         self,
         chat_id: int,
+        *,
         icon: PhotoAttachmentRequestPayload | None = None,
         title: str | None = None,
         pin: str | None = None,
@@ -216,6 +219,7 @@ class Bot:
         self,
         chat_id: int,
         message_id: str,
+        *,
         notify: bool = True,
     ) -> SimpleQueryResult:
         """PUT /chats/{chatId}/pin — Закрепить сообщение."""
@@ -238,6 +242,7 @@ class Bot:
     async def get_members(
         self,
         chat_id: int,
+        *,
         user_ids: list[int] | None = None,
         marker: int | None = None,
         count: int | None = None,
@@ -264,6 +269,7 @@ class Bot:
         self,
         chat_id: int,
         user_id: int,
+        *,
         block: bool | None = None,
     ) -> SimpleQueryResult:
         """DELETE /chats/{chatId}/members — Удалить участника."""
@@ -298,8 +304,9 @@ class Bot:
     async def send_message(
         self,
         chat_id: int | None = None,
-        user_id: int | None = None,
+        *,
         text: str | None = None,
+        user_id: int | None = None,
         attachments: list[AttachmentRequest] | None = None,
         link: NewMessageLink | None = None,
         notify: bool = True,
@@ -323,6 +330,7 @@ class Bot:
     async def edit_message(
         self,
         message_id: str,
+        *,
         text: str | None = None,
         attachments: list[AttachmentRequest] | None = None,
         link: NewMessageLink | None = None,
@@ -348,6 +356,7 @@ class Bot:
     async def get_messages(
         self,
         chat_id: int | None = None,
+        *,
         message_ids: list[str] | None = None,
         from_: int | None = None,
         to: int | None = None,
@@ -375,6 +384,7 @@ class Bot:
     async def answer_on_callback(
         self,
         callback_id: str,
+        *,
         message: NewMessageBody | None = None,
         notification: str | None = None,
     ) -> SimpleQueryResult:
@@ -390,6 +400,7 @@ class Bot:
     async def construct(
         self,
         session_id: str,
+        *,
         messages: list[ConstructedMessageBody] | None = None,
         allow_user_input: bool = False,
         hint: str | None = None,
@@ -422,6 +433,7 @@ class Bot:
         self,
         url: str,
         update_types: list[str],
+        *,
         version: str | None = None,
     ) -> SimpleQueryResult:
         """POST /subscriptions — Создать webhook-подписку."""
@@ -451,6 +463,7 @@ class Bot:
 
     async def get_updates(
         self,
+        *,
         limit: int | None = None,
         timeout: int | None = None,
         marker: int | None = None,

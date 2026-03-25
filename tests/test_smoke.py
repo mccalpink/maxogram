@@ -5,4 +5,4 @@ def test_import() -> None:
     """Проверяем что maxogram импортируется."""
     import maxogram
 
-    assert maxogram.__version__ == "1.0.0"
+    assert maxogram.__version__ == "1.1.0"

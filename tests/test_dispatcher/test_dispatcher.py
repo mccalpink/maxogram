@@ -406,3 +406,90 @@ class TestDispatcherWithSubRouters:
         parent = Router(name="parent")
         with pytest.raises(RuntimeError, match="cannot be attached"):
             parent.include_router(dp)
+
+
+class TestOuterMiddlewareOnEventObserverViaFeedUpdate:
+    """Тесты outer_middleware на event observers через полный pipeline feed_update."""
+
+    @pytest.mark.asyncio
+    async def test_update_outer_middleware_still_works(self) -> None:
+        """outer_middleware на update observer продолжает работать (регрессия)."""
+        dp = Dispatcher()
+        bot = _make_bot()
+        update = _make_message_update()
+        custom_mw_called = False
+
+        async def custom_outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            nonlocal custom_mw_called
+            custom_mw_called = True
+            return await handler(event, data)
+
+        async def handler(event: Any) -> str:
+            return "ok"
+
+        dp.update.outer_middleware.register(custom_outer_mw)
+        dp.message_created.register(handler)
+
+        result = await dp.feed_update(bot, update)
+        assert result == "ok"
+        assert custom_mw_called is True
+
+    @pytest.mark.asyncio
+    async def test_event_outer_middleware_called_via_feed_update(self) -> None:
+        """outer_middleware на message_created вызывается через feed_update."""
+        dp = Dispatcher()
+        bot = _make_bot()
+        update = _make_message_update()
+        event_mw_called = False
+
+        async def event_outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            nonlocal event_mw_called
+            event_mw_called = True
+            return await handler(event, data)
+
+        async def handler(event: Any) -> str:
+            return "ok"
+
+        dp.message_created.outer_middleware.register(event_outer_mw)
+        dp.message_created.register(handler)
+
+        result = await dp.feed_update(bot, update)
+        assert result == "ok"
+        assert event_mw_called is True
+
+    @pytest.mark.asyncio
+    async def test_full_middleware_order_via_feed_update(self) -> None:
+        """Полный порядок: update outer → event outer → event inner → handler."""
+        dp = Dispatcher()
+        bot = _make_bot()
+        update = _make_message_update()
+        order: list[str] = []
+
+        async def update_outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("update_outer")
+            return await handler(event, data)
+
+        async def event_outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("event_outer")
+            return await handler(event, data)
+
+        async def event_inner_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("event_inner")
+            return await handler(event, data)
+
+        async def handler(event: Any) -> str:
+            order.append("handler")
+            return "ok"
+
+        dp.update.outer_middleware.register(update_outer_mw)
+        dp.message_created.outer_middleware.register(event_outer_mw)
+        dp.message_created.middleware.register(event_inner_mw)
+        dp.message_created.register(handler)
+
+        await dp.feed_update(bot, update)
+        assert order == [
+            "update_outer",
+            "event_outer",
+            "event_inner",
+            "handler",
+        ]

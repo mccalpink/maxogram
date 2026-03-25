@@ -1,6 +1,6 @@
 [project]
 name = "maxogram"
-version = "1.0.0"
+version = "1.1.0"
 description = "Async Python framework for Max Bot API, inspired by aiogram"
 readme = "README.md"
 license = "MIT"

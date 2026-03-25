@@ -525,3 +525,179 @@ class TestResolveUsedUpdateTypes:
         child.message_created.register(handler)
         result = root.resolve_used_update_types()
         assert result == ["message_created"]
+
+
+class TestPropagateEventOuterMiddleware:
+    """Тесты outer_middleware на event observers через propagate_event."""
+
+    @pytest.mark.asyncio
+    async def test_outer_middleware_called_on_event_observer(self) -> None:
+        """outer_middleware на event observer вызывается через propagate_event."""
+        router = Router(name="root")
+        mw_called = False
+
+        async def outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            nonlocal mw_called
+            mw_called = True
+            return await handler(event, data)
+
+        async def handler(event: object) -> str:
+            return "handled"
+
+        router.message_created.outer_middleware.register(outer_mw)
+        router.message_created.register(handler)
+
+        result = await router.propagate_event("message_created", object())
+        assert mw_called is True
+        assert result == "handled"
+
+    @pytest.mark.asyncio
+    async def test_inner_middleware_still_works(self) -> None:
+        """Inner middleware продолжает работать (регрессия)."""
+        router = Router(name="root")
+        inner_called = False
+
+        async def inner_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            nonlocal inner_called
+            inner_called = True
+            return await handler(event, data)
+
+        async def handler(event: object) -> str:
+            return "ok"
+
+        router.message_created.middleware.register(inner_mw)
+        router.message_created.register(handler)
+
+        result = await router.propagate_event("message_created", object())
+        assert inner_called is True
+        assert result == "ok"
+
+    @pytest.mark.asyncio
+    async def test_outer_before_inner_before_handler(self) -> None:
+        """Порядок вызова: outer → inner → handler."""
+        router = Router(name="root")
+        order: list[str] = []
+
+        async def outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("outer")
+            return await handler(event, data)
+
+        async def inner_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("inner")
+            return await handler(event, data)
+
+        async def handler(event: object) -> str:
+            order.append("handler")
+            return "ok"
+
+        router.message_created.outer_middleware.register(outer_mw)
+        router.message_created.middleware.register(inner_mw)
+        router.message_created.register(handler)
+
+        await router.propagate_event("message_created", object())
+        assert order == ["outer", "inner", "handler"]
+
+    @pytest.mark.asyncio
+    async def test_outer_middleware_can_short_circuit(self) -> None:
+        """outer_middleware может прервать цепочку, не вызывая handler."""
+        router = Router(name="root")
+        handler_called = False
+
+        async def blocking_mw(handler: Any, event: Any, data: dict[str, Any]) -> str:
+            return "blocked"
+
+        async def handler(event: object) -> str:
+            nonlocal handler_called
+            handler_called = True
+            return "handled"
+
+        router.message_created.outer_middleware.register(blocking_mw)
+        router.message_created.register(handler)
+
+        result = await router.propagate_event("message_created", object())
+        assert result == "blocked"
+        assert handler_called is False
+
+    @pytest.mark.asyncio
+    async def test_outer_middleware_on_sub_router(self) -> None:
+        """outer_middleware на sub_router event observer вызывается."""
+        root = Router(name="root")
+        child = Router(name="child")
+        root.include_router(child)
+        mw_called = False
+
+        async def outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            nonlocal mw_called
+            mw_called = True
+            return await handler(event, data)
+
+        async def handler(event: object) -> str:
+            return "child_handled"
+
+        child.message_created.outer_middleware.register(outer_mw)
+        child.message_created.register(handler)
+
+        result = await root.propagate_event("message_created", object())
+        assert mw_called is True
+        assert result == "child_handled"
+
+    @pytest.mark.asyncio
+    async def test_outer_middleware_receives_data_dict(self) -> None:
+        """outer_middleware получает data dict с kwargs из propagate_event."""
+        router = Router(name="root")
+        received_data: dict[str, Any] = {}
+
+        async def outer_mw(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            received_data.update(data)
+            return await handler(event, data)
+
+        async def handler(event: object, custom: str = "") -> str:
+            return custom
+
+        router.message_created.outer_middleware.register(outer_mw)
+        router.message_created.register(handler)
+
+        await router.propagate_event("message_created", object(), custom="value")
+        assert received_data["custom"] == "value"
+        assert "event_router" in received_data
+
+    @pytest.mark.asyncio
+    async def test_multiple_outer_middlewares_order(self) -> None:
+        """Несколько outer middleware вызываются в порядке регистрации (onion)."""
+        router = Router(name="root")
+        order: list[str] = []
+
+        async def mw1(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("mw1_before")
+            result = await handler(event, data)
+            order.append("mw1_after")
+            return result
+
+        async def mw2(handler: Any, event: Any, data: dict[str, Any]) -> Any:
+            order.append("mw2_before")
+            result = await handler(event, data)
+            order.append("mw2_after")
+            return result
+
+        async def handler(event: object) -> str:
+            order.append("handler")
+            return "ok"
+
+        router.message_created.outer_middleware.register(mw1)
+        router.message_created.outer_middleware.register(mw2)
+        router.message_created.register(handler)
+
+        await router.propagate_event("message_created", object())
+        assert order == ["mw1_before", "mw2_before", "handler", "mw2_after", "mw1_after"]
+
+    @pytest.mark.asyncio
+    async def test_no_outer_middleware_still_works(self) -> None:
+        """Без outer middleware propagate_event работает как раньше."""
+        router = Router(name="root")
+
+        async def handler(event: object) -> str:
+            return "no_mw"
+
+        router.message_created.register(handler)
+        result = await router.propagate_event("message_created", object())
+        assert result == "no_mw"

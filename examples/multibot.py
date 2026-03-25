@@ -18,7 +18,7 @@ import os
 from maxogram.client.bot import Bot
 from maxogram.dispatcher.dispatcher import Dispatcher
 from maxogram.dispatcher.router import Router
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 logging.basicConfig(level=logging.INFO)
 
@@ -32,7 +32,7 @@ router = Router(name="multibot")
 
 @router.message_created()
 async def cmd_whoami(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
@@ -40,10 +40,10 @@ async def cmd_whoami(
 
     Каждый бот отвечает от своего имени, хотя хендлер один.
     """
-    text = event.message.body.text
+    text = event.body.text
     if text != "/whoami":
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -57,15 +57,15 @@ async def cmd_whoami(
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
     """Эхо — работает для обоих ботов."""
-    text = event.message.body.text
+    text = event.body.text
     if not text or text.startswith("/"):
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 

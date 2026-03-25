@@ -20,7 +20,8 @@ from maxogram.fsm.context import FSMContext
 from maxogram.fsm.middleware import FSMContextMiddleware
 from maxogram.fsm.state import State, StatesGroup
 from maxogram.fsm.storage.memory import MemoryStorage
-from maxogram.types.update import MessageCallbackUpdate, MessageCreatedUpdate
+from maxogram.types.callback import Callback
+from maxogram.types.message import Message
 from maxogram.utils.keyboard import InlineKeyboardBuilder
 
 logging.basicConfig(level=logging.INFO)
@@ -41,14 +42,14 @@ class Form(StatesGroup):
 # --- Вспомогательные функции ---
 
 
-def _get_text(event: MessageCreatedUpdate) -> str | None:
+def _get_text(event: Message) -> str | None:
     """Извлечь текст из события message_created."""
-    return event.message.body.text
+    return event.body.text
 
 
-def _get_chat_id(event: MessageCreatedUpdate) -> int | None:
+def _get_chat_id(event: Message) -> int | None:
     """Извлечь chat_id из события message_created."""
-    return event.message.recipient.chat_id
+    return event.recipient.chat_id
 
 
 # --- Хендлеры ---
@@ -56,7 +57,7 @@ def _get_chat_id(event: MessageCreatedUpdate) -> int | None:
 
 @router.message_created()
 async def cmd_start(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -88,7 +89,7 @@ async def cmd_start(
 
 @router.message_created()
 async def cmd_keyboard(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
@@ -114,13 +115,12 @@ async def cmd_keyboard(
 
 @router.message_callback()
 async def on_callback(
-    event: MessageCallbackUpdate,
+    event: Callback,
     bot: Bot,
     **kwargs: object,
 ) -> None:
     """Обработка нажатия inline-кнопки."""
-    callback = event.callback
-    payload = callback.payload
+    payload = event.payload
 
     if payload == "like":
         notification = "Спасибо!"
@@ -130,14 +130,14 @@ async def on_callback(
         notification = f"Callback: {payload}"
 
     await bot.answer_on_callback(
-        callback_id=callback.callback_id,
+        callback_id=event.callback_id,
         notification=notification,
     )
 
 
 @router.message_created()
 async def cmd_form(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     **kwargs: object,
@@ -159,7 +159,7 @@ async def cmd_form(
 
 @router.message_created()
 async def process_name(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -183,7 +183,7 @@ async def process_name(
 
 @router.message_created()
 async def process_age(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     raw_state: str | None = None,
@@ -209,7 +209,7 @@ async def process_age(
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     raw_state: str | None = None,
     **kwargs: object,

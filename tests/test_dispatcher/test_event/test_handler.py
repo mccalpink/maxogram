@@ -14,6 +14,30 @@ from maxogram.dispatcher.event.handler import (
 )
 from maxogram.filters.base import Filter
 
+# -- Вспомогательные callable-классы для тестов --
+
+
+class AsyncCallableNoFilter:
+    """Callable-класс с async __call__, НЕ наследующий Filter."""
+
+    async def __call__(self, event: object, **kwargs: Any) -> bool:
+        return True
+
+
+class SyncCallableNoFilter:
+    """Callable-класс с sync __call__, НЕ наследующий Filter."""
+
+    def __call__(self, event: object, **kwargs: Any) -> bool:
+        return True
+
+
+class AsyncCallableFilter(Filter):
+    """Callable-класс с async __call__, наследующий Filter."""
+
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
+        return {"from_async_callable_filter": True}
+
+
 # -- Вспомогательные функции для тестов --
 
 
@@ -116,6 +140,30 @@ class TestCallableObject:
         result = await obj.call("event_obj", value=42)
         assert result == 42
 
+    def test_async_callable_instance_detected(self) -> None:
+        """Callable-экземпляр с async __call__ — awaitable=True."""
+        obj = CallableObject(callback=AsyncCallableNoFilter())
+        assert obj.awaitable is True
+
+    def test_sync_callable_instance_detected(self) -> None:
+        """Callable-экземпляр с sync __call__ — awaitable=False."""
+        obj = CallableObject(callback=SyncCallableNoFilter())
+        assert obj.awaitable is False
+
+    @pytest.mark.asyncio
+    async def test_async_callable_instance_call(self) -> None:
+        """Callable-экземпляр с async __call__ — корректный вызов."""
+        obj = CallableObject(callback=AsyncCallableNoFilter())
+        result = await obj.call("event")
+        assert result is True
+
+    @pytest.mark.asyncio
+    async def test_sync_callable_instance_call(self) -> None:
+        """Callable-экземпляр с sync __call__ — вызов через to_thread."""
+        obj = CallableObject(callback=SyncCallableNoFilter())
+        result = await obj.call("event")
+        assert result is True
+
 
 # -- Тесты FilterObject --
 
@@ -190,6 +238,60 @@ class TestFilterObject:
         obj = FilterObject(callback=MyFilter())
         result = await obj.call("event")
         assert result == {"from_filter": "value"}
+
+    def test_async_callable_no_filter_awaitable(self) -> None:
+        """FilterObject с async callable БЕЗ наследования от Filter — awaitable=True."""
+        obj = FilterObject(callback=AsyncCallableNoFilter())
+        assert obj.awaitable is True
+
+    @pytest.mark.asyncio
+    async def test_async_callable_no_filter_call(self) -> None:
+        """FilterObject с async callable БЕЗ наследования от Filter — корректный вызов."""
+        obj = FilterObject(callback=AsyncCallableNoFilter())
+        result = await obj.call("event")
+        assert result is True
+
+    def test_async_callable_filter_subclass_awaitable(self) -> None:
+        """FilterObject: async callable + Filter — awaitable=True (регрессия)."""
+        obj = FilterObject(callback=AsyncCallableFilter())
+        assert obj.awaitable is True
+
+    @pytest.mark.asyncio
+    async def test_async_callable_filter_subclass_call(self) -> None:
+        """FilterObject с async callable-классом, наследующим Filter — корректный вызов."""
+        obj = FilterObject(callback=AsyncCallableFilter())
+        result = await obj.call("event")
+        assert result == {"from_async_callable_filter": True}
+
+    def test_sync_callable_no_filter_not_awaitable(self) -> None:
+        """FilterObject с sync callable БЕЗ наследования от Filter — awaitable=False."""
+        obj = FilterObject(callback=SyncCallableNoFilter())
+        assert obj.awaitable is False
+
+    @pytest.mark.asyncio
+    async def test_sync_callable_no_filter_call(self) -> None:
+        """FilterObject с sync callable БЕЗ наследования от Filter — вызов через to_thread."""
+        obj = FilterObject(callback=SyncCallableNoFilter())
+        result = await obj.call("event")
+        assert result is True
+
+    def test_async_function_filter_awaitable(self) -> None:
+        """FilterObject с обычной async функцией — awaitable=True (регрессия)."""
+
+        async def my_filter(event: object) -> bool:
+            return True
+
+        obj = FilterObject(callback=my_filter)
+        assert obj.awaitable is True
+
+    def test_sync_function_filter_not_awaitable(self) -> None:
+        """FilterObject с обычной sync функцией — awaitable=False (регрессия)."""
+
+        def my_filter(event: object) -> bool:
+            return True
+
+        obj = FilterObject(callback=my_filter)
+        assert obj.awaitable is False
 
 
 # -- Тесты HandlerObject --

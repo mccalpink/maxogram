@@ -53,6 +53,11 @@ class CallableObject:
             and hasattr(self.callback, "__await__")
         ):
             self.awaitable = True
+        # Callable-экземпляры с async __call__ (не классы, не функции)
+        if not self.awaitable and callable(self.callback):
+            self.awaitable = inspect.iscoroutinefunction(
+                self.callback.__call__  # type: ignore[operator]
+            )
         sig = inspect.signature(self.callback)
         self.params = frozenset(
             p.name for p in sig.parameters.values() if p.kind in _ACCEPTED_KINDS

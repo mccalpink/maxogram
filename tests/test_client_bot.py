@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import json
 from typing import TYPE_CHECKING, Any
 
@@ -269,6 +270,27 @@ class TestShortcutSendMessage:
         assert method.link is None
         assert method.format is None
 
+    async def test_send_message_positional_chat_id(self, bot: Bot, session: MockSession) -> None:
+        """send_message принимает chat_id как позиционный аргумент."""
+        session.set_response(SendMessage, SEND_MESSAGE_DATA)
+
+        await bot.send_message(42, text="positional chat_id")
+
+        method = session.last_method
+        assert isinstance(method, SendMessage)
+        assert method.chat_id == 42
+        assert method.text == "positional chat_id"
+
+    async def test_send_message_keyword_only_after_chat_id(self) -> None:
+        """text, user_id и остальные аргументы — keyword-only (нельзя позиционно)."""
+        sig = inspect.signature(Bot.send_message)
+        params = list(sig.parameters.values())
+        # params[0] = self, params[1] = chat_id, params[2..] = keyword-only
+        for param in params[2:]:
+            assert param.kind == inspect.Parameter.KEYWORD_ONLY, (
+                f"Параметр {param.name!r} должен быть keyword-only"
+            )
+
 
 class TestShortcutGetChat:
     """get_chat — создаёт GetChat с chat_id."""
@@ -305,6 +327,16 @@ class TestShortcutEditMessage:
         assert isinstance(method, EditMessage)
         assert method.message_id == "mid.123"
         assert method.text == "updated"
+
+    async def test_edit_message_keyword_only_after_message_id(self) -> None:
+        """text и остальные аргументы edit_message — keyword-only."""
+        sig = inspect.signature(Bot.edit_message)
+        params = list(sig.parameters.values())
+        # params[0] = self, params[1] = message_id, params[2..] = keyword-only
+        for param in params[2:]:
+            assert param.kind == inspect.Parameter.KEYWORD_ONLY, (
+                f"Параметр {param.name!r} должен быть keyword-only"
+            )
 
 
 class TestShortcutDeleteMessage:

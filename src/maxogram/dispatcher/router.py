@@ -117,12 +117,16 @@ class Router:
 
         Сначала пробует текущий роутер, затем рекурсивно sub_routers.
         Первый обработавший хендлер останавливает распространение.
+
+        Outer middleware observer'а оборачивают вызов trigger,
+        что позволяет регистрировать middleware через
+        ``observer.outer_middleware.register(...)``
         """
         kwargs["event_router"] = self
         observer = self.observers.get(update_type)
 
         if observer:
-            response = await observer.trigger(event, **kwargs)
+            response = await observer.wrap_outer_middleware(observer.trigger, event, kwargs)
             if response is not UNHANDLED:
                 return response
 

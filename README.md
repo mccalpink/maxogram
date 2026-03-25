@@ -68,20 +68,20 @@ import os
 from maxogram.client.bot import Bot
 from maxogram.dispatcher.dispatcher import Dispatcher
 from maxogram.dispatcher.router import Router
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 router = Router()
 
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
     """Повторяет любое текстовое сообщение."""
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if text and chat_id:
         await bot.send_message(chat_id=chat_id, text=text)
 

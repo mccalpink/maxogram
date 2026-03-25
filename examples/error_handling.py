@@ -20,7 +20,7 @@ from maxogram.dispatcher.dispatcher import Dispatcher
 from maxogram.dispatcher.middlewares.error import ErrorEvent
 from maxogram.dispatcher.router import Router
 from maxogram.filters.exception import ExceptionTypeFilter
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ async def handle_any_error(
 
 @router.message_created()
 async def cmd_error(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
@@ -83,7 +83,7 @@ async def cmd_error(
 
     ErrorsMiddleware перехватит исключение и передаст в error observer.
     """
-    text = event.message.body.text
+    text = event.body.text
     if text != "/error":
         return
 
@@ -94,7 +94,7 @@ async def cmd_error(
 
 @router.message_created()
 async def cmd_crash(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
@@ -102,7 +102,7 @@ async def cmd_crash(
 
     Будет перехвачена handle_any_error (fallback).
     """
-    text = event.message.body.text
+    text = event.body.text
     if text != "/crash":
         return
 
@@ -112,15 +112,15 @@ async def cmd_crash(
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
     """Эхо — нормальная работа без ошибок."""
-    text = event.message.body.text
+    text = event.body.text
     if not text or text.startswith("/"):
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 

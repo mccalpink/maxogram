@@ -30,7 +30,7 @@ from maxogram.fsm.middleware import FSMContextMiddleware
 from maxogram.fsm.storage.memory import MemoryStorage
 from maxogram.i18n.core import I18n
 from maxogram.i18n.middleware import I18nMiddleware
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 logging.basicConfig(level=logging.INFO)
 
@@ -50,7 +50,7 @@ WELCOME_TEXT = __("Welcome to the bot!")
 
 @router.message_created()
 async def cmd_start(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     gettext: Callable[[str], str],
     **kwargs: object,
@@ -59,10 +59,10 @@ async def cmd_start(
 
     gettext инжектируется I18nMiddleware и уже привязан к текущей локали.
     """
-    text = event.message.body.text
+    text = event.body.text
     if not text or not text.startswith("/start"):
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -80,7 +80,7 @@ async def cmd_start(
 
 @router.message_created()
 async def cmd_lang(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     i18n_locale: str,
@@ -91,10 +91,10 @@ async def cmd_lang(
 
     Сохраняем выбранный язык в FSM data для последующих запросов.
     """
-    text = event.message.body.text
+    text = event.body.text
     if text != "/lang":
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 
@@ -112,16 +112,16 @@ async def cmd_lang(
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     gettext: Callable[[str], str],
     **kwargs: object,
 ) -> None:
     """Эхо с переведённым префиксом."""
-    text = event.message.body.text
+    text = event.body.text
     if not text or text.startswith("/"):
         return
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id is None:
         return
 

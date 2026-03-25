@@ -34,19 +34,19 @@ import os
 from maxogram.client.bot import Bot
 from maxogram.dispatcher.dispatcher import Dispatcher
 from maxogram.dispatcher.router import Router
-from maxogram.types.update import MessageCreatedUpdate
+from maxogram.types.message import Message
 
 router = Router()
 
 
 @router.message_created()
 async def echo(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if text and chat_id:
         await bot.send_message(chat_id=chat_id, text=text)
 
@@ -70,24 +70,24 @@ from maxogram.filters.command import CommandObject
 
 @router.message_created(Command("start"))
 async def cmd_start(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     command: CommandObject,
     **kwargs: object,
 ) -> None:
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id:
         await bot.send_message(chat_id=chat_id, text="Привет! Я бот на maxogram.")
 
 
 @router.message_created(Command("help"))
 async def cmd_help(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     command: CommandObject,
     **kwargs: object,
 ) -> None:
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id:
         await bot.send_message(chat_id=chat_id, text="Доступные команды: /start, /help")
 ```
@@ -99,17 +99,17 @@ async def cmd_help(
 Создание клавиатуры через `InlineKeyboardBuilder` и обработка нажатий:
 
 ```python
-from maxogram.types.update import MessageCallbackUpdate
+from maxogram.types.callback import Callback
 from maxogram.utils.keyboard import InlineKeyboardBuilder
 
 
 @router.message_created(Command("menu"))
 async def cmd_menu(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     **kwargs: object,
 ) -> None:
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if not chat_id:
         return
 
@@ -127,14 +127,13 @@ async def cmd_menu(
 
 @router.message_callback()
 async def on_callback(
-    event: MessageCallbackUpdate,
+    event: Callback,
     bot: Bot,
     **kwargs: object,
 ) -> None:
-    callback = event.callback
     await bot.answer_on_callback(
-        callback_id=callback.callback_id,
-        notification=f"Вы выбрали: {callback.payload}",
+        callback_id=event.callback_id,
+        notification=f"Вы выбрали: {event.payload}",
     )
 ```
 
@@ -157,12 +156,12 @@ class OrderForm(StatesGroup):
 
 @router.message_created(Command("order"))
 async def cmd_order(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     **kwargs: object,
 ) -> None:
-    chat_id = event.message.recipient.chat_id
+    chat_id = event.recipient.chat_id
     if chat_id:
         await state.set_state(OrderForm.product)
         await bot.send_message(chat_id=chat_id, text="Какой товар?")
@@ -170,13 +169,13 @@ async def cmd_order(
 
 @router.message_created(StateFilter(OrderForm.product))
 async def process_product(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     **kwargs: object,
 ) -> None:
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if not chat_id:
         return
     await state.update_data(product=text)
@@ -186,13 +185,13 @@ async def process_product(
 
 @router.message_created(StateFilter(OrderForm.quantity))
 async def process_quantity(
-    event: MessageCreatedUpdate,
+    event: Message,
     bot: Bot,
     state: FSMContext,
     **kwargs: object,
 ) -> None:
-    text = event.message.body.text
-    chat_id = event.message.recipient.chat_id
+    text = event.body.text
+    chat_id = event.recipient.chat_id
     if not chat_id:
         return
     await state.update_data(quantity=text)
@@ -381,8 +380,8 @@ registry.add(SurveyWizard)
 
 @router.message_created()
 async def cmd_start(event, bot, state, **kwargs):
-    if (event.message.body.text or "").startswith("/start"):
-        chat_id = event.message.recipient.chat_id
+    if (event.body.text or "").startswith("/start"):
+        chat_id = event.recipient.chat_id
         await registry.enter(ctx=state, name="SurveyWizard")
         await bot.send_message(chat_id=chat_id, text="Как вас зовут?")
 ```
@@ -416,7 +415,7 @@ async def cmd_start(event, bot, gettext, **kwargs):
     """gettext инжектируется I18nMiddleware, привязан к текущей локали."""
     _ = gettext
     await bot.send_message(
-        chat_id=event.message.recipient.chat_id,
+        chat_id=event.recipient.chat_id,
         text=_("Hello! I'm a multilingual bot."),
     )
 ```
