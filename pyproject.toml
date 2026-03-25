@@ -1,0 +1,99 @@
+[project]
+name = "maxogram"
+version = "1.0.0"
+description = "Async Python framework for Max Bot API, inspired by aiogram"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    {name = "Vadim Didenko", email = "didenko.it.ai@gmail.com"},
+]
+keywords = ["max", "bot", "api", "async", "framework"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Chat",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiohttp>=3.9,<4.0",
+    "pydantic>=2.4,<3.0",
+    "magic-filter>=1.0.12,<1.1",
+    "aiofiles>=23.2,<26.0",
+    "certifi>=2023.7",
+]
+
+[project.urls]
+Homepage = "https://github.com/mccalpink/maxogram"
+Repository = "https://github.com/mccalpink/maxogram"
+Documentation = "https://github.com/mccalpink/maxogram#readme"
+Changelog = "https://github.com/mccalpink/maxogram/blob/main/CHANGELOG.md"
+Issues = "https://github.com/mccalpink/maxogram/issues"
+
+[project.optional-dependencies]
+redis = ["redis>=5.0"]
+mongodb = ["motor>=3.3"]
+fast = ["uvloop>=0.19", "aiodns>=3.0"]
+i18n = ["babel>=2.13"]
+proxy = ["aiohttp-socks>=0.8"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "aresponses>=3.0",
+    "pytest-mock>=3.12",
+    "pytest-cov>=5.0",
+    "mypy>=1.8",
+    "ruff>=0.3",
+    "fakeredis[lua]>=2.34.1,<3.0.0",
+    "pyyaml>=6.0.3,<7.0.0",
+    "types-pyyaml>=6.0.12",
+]
+
+[project.scripts]
+schema-diff = "maxogram.utils.schema_diff.__main__:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [{include = "maxogram", from = "src"}]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 99
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "ANN", "B", "A", "SIM", "TCH"]
+ignore = [
+    "TCH001",  # Pydantic models require runtime imports
+    "TCH002",  # Same — third-party Pydantic types need runtime
+    "UP007",   # Union[] required for Pydantic discriminated unions with Field(discriminator=)
+    "ANN401",  # Any допустим для bot: Any (тип Bot ещё не определён)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["maxogram"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

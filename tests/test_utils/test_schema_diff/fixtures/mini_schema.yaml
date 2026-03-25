@@ -1,0 +1,122 @@
+openapi: "3.0.0"
+info:
+  title: Mini Test API
+  version: "0.1.0"
+paths:
+  /messages:
+    post:
+      operationId: sendMessage
+      parameters:
+        - name: chat_id
+          in: query
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMessageBody'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /chats/{chatId}:
+    get:
+      operationId: getChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        username:
+          type: string
+          nullable: true
+      required:
+        - user_id
+        - name
+    Message:
+      type: object
+      properties:
+        sender:
+          $ref: '#/components/schemas/User'
+        text:
+          type: string
+          nullable: true
+        timestamp:
+          type: integer
+          format: int64
+      required:
+        - sender
+        - timestamp
+    NewMessageBody:
+      type: object
+      properties:
+        text:
+          type: string
+        notify:
+          type: boolean
+    Chat:
+      type: object
+      properties:
+        chat_id:
+          type: integer
+          format: int64
+        title:
+          type: string
+      required:
+        - chat_id
+        - title
+    Update:
+      discriminator:
+        propertyName: update_type
+        mapping:
+          message_created: '#/components/schemas/MessageCreatedUpdate'
+          bot_started: '#/components/schemas/BotStartedUpdate'
+      properties:
+        update_type:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+      required:
+        - update_type
+        - timestamp
+    MessageCreatedUpdate:
+      allOf:
+        - $ref: '#/components/schemas/Update'
+        - type: object
+          properties:
+            message:
+              $ref: '#/components/schemas/Message'
+          required:
+            - message
+    BotStartedUpdate:
+      allOf:
+        - $ref: '#/components/schemas/Update'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+          required:
+            - user

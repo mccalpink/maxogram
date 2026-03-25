@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --with dev --all-extras
+
+      - name: Lint (ruff)
+        run: |
+          poetry run ruff check src/ tests/
+          poetry run ruff format --check src/ tests/
+
+      - name: Type check (mypy)
+        run: poetry run mypy src/
+
+      - name: Tests (pytest)
+        run: poetry run pytest --cov=maxogram --cov-report=xml -q
+
+      - name: Upload coverage
+        if: matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v4
+        with:
+          file: coverage.xml
+          fail_ci_if_error: false

@@ -1,0 +1,235 @@
+"""Типы данных Max Bot API — Pydantic v2 модели."""
+
+from maxogram.types.attachment import (
+    Attachment,
+    AttachmentRequest,
+    AudioAttachment,
+    AudioAttachmentPayload,
+    AudioAttachmentRequest,
+    ContactAttachment,
+    ContactAttachmentPayload,
+    ContactAttachmentRequest,
+    ContactAttachmentRequestPayload,
+    FileAttachment,
+    FileAttachmentPayload,
+    FileAttachmentRequest,
+    InlineKeyboardAttachment,
+    InlineKeyboardAttachmentRequestWrapper,
+    LocationAttachment,
+    LocationAttachmentRequest,
+    LocationAttachmentRequestPayload,
+    PhotoAttachment,
+    PhotoAttachmentPayload,
+    PhotoAttachmentRequest,
+    ShareAttachment,
+    ShareAttachmentPayload,
+    ShareAttachmentRequest,
+    ShareAttachmentRequestPayload,
+    StickerAttachment,
+    StickerAttachmentPayload,
+    StickerAttachmentRequest,
+    StickerAttachmentRequestPayload,
+    UploadedInfo,
+    VideoAttachment,
+    VideoAttachmentPayload,
+    VideoAttachmentRequest,
+)
+from maxogram.types.base import MaxObject
+from maxogram.types.button import (
+    Button,
+    CallbackButton,
+    ChatButton,
+    LinkButton,
+    RequestContactButton,
+    RequestGeoLocationButton,
+)
+from maxogram.types.callback import Callback, CallbackAnswer
+from maxogram.types.chat import Chat, ChatList, ChatMember, ChatMembersList, ChatPatch
+from maxogram.types.constructor import ConstructedMessageBody, ConstructorAnswer
+from maxogram.types.keyboard import (
+    InlineKeyboardAttachmentPayload,
+    InlineKeyboardAttachmentRequest,
+    Keyboard,
+)
+from maxogram.types.markup import (
+    EmphasizedMarkup,
+    HeadingMarkup,
+    HighlightedMarkup,
+    LinkMarkup,
+    MarkupElement,
+    MonospacedMarkup,
+    StrikethroughMarkup,
+    StrongMarkup,
+    UnderlineMarkup,
+    UserMentionMarkup,
+)
+from maxogram.types.message import (
+    LinkedMessage,
+    Message,
+    MessageBody,
+    MessageList,
+    MessageStat,
+    NewMessageBody,
+    NewMessageLink,
+    Recipient,
+    SendMessageResult,
+)
+from maxogram.types.misc import (
+    ActionRequestBody,
+    Error,
+    GetPinnedMessageResult,
+    GetSubscriptionsResult,
+    Image,
+    PhotoAttachmentRequestPayload,
+    PhotoToken,
+    PinMessageBody,
+    SimpleQueryResult,
+    UserIdsList,
+)
+from maxogram.types.subscription import Subscription, SubscriptionRequestBody
+from maxogram.types.update import (
+    BotAddedUpdate,
+    BotRemovedUpdate,
+    BotStartedUpdate,
+    ChatTitleChangedUpdate,
+    GetUpdatesResult,
+    MessageCallbackUpdate,
+    MessageChatCreatedUpdate,
+    MessageConstructedUpdate,
+    MessageConstructionRequestUpdate,
+    MessageCreatedUpdate,
+    MessageEditedUpdate,
+    MessageRemovedUpdate,
+    Update,
+    UserAddedUpdate,
+    UserRemovedUpdate,
+)
+from maxogram.types.upload import UploadedFileInfo, UploadEndpoint
+from maxogram.types.user import BotCommand, BotInfo, BotPatch, User, UserWithPhoto
+
+# Resolve forward references
+Chat.model_rebuild()
+ChatList.model_rebuild()
+GetPinnedMessageResult.model_rebuild()
+GetSubscriptionsResult.model_rebuild()
+
+__all__ = [
+    # base
+    "MaxObject",
+    # misc
+    "ActionRequestBody",
+    "Error",
+    "GetPinnedMessageResult",
+    "GetSubscriptionsResult",
+    "Image",
+    "PhotoAttachmentRequestPayload",
+    "PhotoToken",
+    "PinMessageBody",
+    "SimpleQueryResult",
+    "UserIdsList",
+    # user
+    "BotCommand",
+    "BotInfo",
+    "BotPatch",
+    "User",
+    "UserWithPhoto",
+    # chat
+    "Chat",
+    "ChatList",
+    "ChatMember",
+    "ChatMembersList",
+    "ChatPatch",
+    # markup
+    "EmphasizedMarkup",
+    "HeadingMarkup",
+    "HighlightedMarkup",
+    "LinkMarkup",
+    "MarkupElement",
+    "MonospacedMarkup",
+    "StrikethroughMarkup",
+    "StrongMarkup",
+    "UnderlineMarkup",
+    "UserMentionMarkup",
+    # button
+    "Button",
+    "CallbackButton",
+    "ChatButton",
+    "LinkButton",
+    "RequestContactButton",
+    "RequestGeoLocationButton",
+    # keyboard
+    "InlineKeyboardAttachmentPayload",
+    "InlineKeyboardAttachmentRequest",
+    "Keyboard",
+    # attachment
+    "Attachment",
+    "AttachmentRequest",
+    "AudioAttachment",
+    "AudioAttachmentPayload",
+    "AudioAttachmentRequest",
+    "ContactAttachment",
+    "ContactAttachmentPayload",
+    "ContactAttachmentRequest",
+    "ContactAttachmentRequestPayload",
+    "FileAttachment",
+    "FileAttachmentPayload",
+    "FileAttachmentRequest",
+    "InlineKeyboardAttachment",
+    "InlineKeyboardAttachmentRequestWrapper",
+    "LocationAttachment",
+    "LocationAttachmentRequest",
+    "LocationAttachmentRequestPayload",
+    "PhotoAttachment",
+    "PhotoAttachmentPayload",
+    "PhotoAttachmentRequest",
+    "ShareAttachment",
+    "ShareAttachmentPayload",
+    "ShareAttachmentRequest",
+    "ShareAttachmentRequestPayload",
+    "StickerAttachment",
+    "StickerAttachmentPayload",
+    "StickerAttachmentRequest",
+    "StickerAttachmentRequestPayload",
+    "UploadedInfo",
+    "VideoAttachment",
+    "VideoAttachmentPayload",
+    "VideoAttachmentRequest",
+    # message
+    "LinkedMessage",
+    "Message",
+    "MessageBody",
+    "MessageList",
+    "MessageStat",
+    "NewMessageBody",
+    "NewMessageLink",
+    "Recipient",
+    "SendMessageResult",
+    # callback
+    "Callback",
+    "CallbackAnswer",
+    # update
+    "BotAddedUpdate",
+    "BotRemovedUpdate",
+    "BotStartedUpdate",
+    "ChatTitleChangedUpdate",
+    "GetUpdatesResult",
+    "MessageCallbackUpdate",
+    "MessageChatCreatedUpdate",
+    "MessageConstructedUpdate",
+    "MessageConstructionRequestUpdate",
+    "MessageCreatedUpdate",
+    "MessageEditedUpdate",
+    "MessageRemovedUpdate",
+    "Update",
+    "UserAddedUpdate",
+    "UserRemovedUpdate",
+    # subscription
+    "Subscription",
+    "SubscriptionRequestBody",
+    # upload
+    "UploadEndpoint",
+    "UploadedFileInfo",
+    # constructor
+    "ConstructedMessageBody",
+    "ConstructorAnswer",
+]

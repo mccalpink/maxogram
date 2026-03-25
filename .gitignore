@@ -1,0 +1,44 @@
+# Secrets & local config
+.env
+.env.*
+.mcp.json
+
+# Private (dev only — not for public repo)
+analysis/
+docs_work/
+.agent_teams/
+CLAUDE.md
+.claude/
+.serena/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+*.so
+*.whl
+dist/
+build/
+
+# Virtual environment
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Tools
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
