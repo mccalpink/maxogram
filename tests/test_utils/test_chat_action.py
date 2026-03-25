@@ -144,9 +144,7 @@ class TestErrorHandling:
         bot = _make_bot()
 
         with pytest.raises(ValueError, match="user error"):
-            async with ChatActionSender(
-                bot=bot, chat_id=1, action=SenderAction.TYPING_ON
-            ):
+            async with ChatActionSender(bot=bot, chat_id=1, action=SenderAction.TYPING_ON):
                 msg = "user error"
                 raise ValueError(msg)
 

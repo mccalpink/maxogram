@@ -51,19 +51,13 @@ def _make_init_data(
         fields.update(extra_fields)
 
     # data_check_string: sorted by key, joined with \n
-    data_check_string = "\n".join(
-        f"{k}={v}" for k, v in sorted(fields.items())
-    )
+    data_check_string = "\n".join(f"{k}={v}" for k, v in sorted(fields.items()))
 
     # secret_key = HMAC-SHA256("WebAppData", bot_token)
-    secret_key = hmac.new(
-        b"WebAppData", bot_token.encode(), hashlib.sha256
-    ).digest()
+    secret_key = hmac.new(b"WebAppData", bot_token.encode(), hashlib.sha256).digest()
 
     # hash = HMAC-SHA256(secret_key, data_check_string)
-    computed_hash = hmac.new(
-        secret_key, data_check_string.encode(), hashlib.sha256
-    ).hexdigest()
+    computed_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
 
     if tamper_hash:
         computed_hash = "a" * 64

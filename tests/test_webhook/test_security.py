@@ -51,9 +51,7 @@ class TestIPWhitelistInit:
 
     def test_multiple_entries(self) -> None:
         """Несколько записей (IP + CIDR)."""
-        mw = IPWhitelistMiddleware(
-            trusted_ips=["10.0.0.1", "192.168.0.0/16"]
-        )
+        mw = IPWhitelistMiddleware(trusted_ips=["10.0.0.1", "192.168.0.0/16"])
         assert mw._contains("10.0.0.1")
         assert mw._contains("192.168.100.50")
         assert not mw._contains("172.16.0.1")

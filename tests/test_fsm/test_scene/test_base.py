@@ -286,9 +286,7 @@ class TestSceneAsRouter:
             results.append("handled")
             return "ok"
 
-        result = await scene.propagate_event(
-            "message_created", "test_event", handler=None
-        )
+        result = await scene.propagate_event("message_created", "test_event", handler=None)
         assert result == "ok"
         assert results == ["handled"]
 
@@ -313,9 +311,7 @@ class TestSceneAsRouter:
             pass
 
         scene = MenuScene()
-        result = await scene.propagate_event(
-            "message_created", "test_event", handler=None
-        )
+        result = await scene.propagate_event("message_created", "test_event", handler=None)
         assert result is UNHANDLED
 
 

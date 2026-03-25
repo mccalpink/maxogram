@@ -95,11 +95,7 @@ class AiohttpSession(BaseSession):
             if value is not None:
                 # Alias resolution: from_ → "from", type_ → "type"
                 field_info = type(method).model_fields.get(param)
-                api_key = (
-                    field_info.alias
-                    if field_info and field_info.alias
-                    else param
-                )
+                api_key = field_info.alias if field_info and field_info.alias else param
                 # Конвертация значений в типы, поддерживаемые yarl/aiohttp
                 if isinstance(value, list):
                     # Списочные параметры — comma-separated

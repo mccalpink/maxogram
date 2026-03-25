@@ -149,12 +149,14 @@ class TestCheckResponseSuccess:
         """200 + BotInfo JSON → BotInfo с правильными полями."""
         session = ConcreteSession()
         method = FakeMethodBotInfo()
-        content = json.dumps({
-            "user_id": 1,
-            "name": "TestBot",
-            "is_bot": True,
-            "last_activity_time": 1700000000,
-        })
+        content = json.dumps(
+            {
+                "user_id": 1,
+                "name": "TestBot",
+                "is_bot": True,
+                "last_activity_time": 1700000000,
+            }
+        )
 
         result = session.check_response(method, 200, content)
 
@@ -328,11 +330,13 @@ class TestCheckResponseErrors:
         """Поле code из ответа API сохраняется в исключении."""
         session = ConcreteSession()
         method = FakeMethodSimple()
-        content = json.dumps({
-            "error": "validation.error",
-            "code": "invalid.param",
-            "message": "Bad param",
-        })
+        content = json.dumps(
+            {
+                "error": "validation.error",
+                "code": "invalid.param",
+                "message": "Bad param",
+            }
+        )
 
         with pytest.raises(MaxBadRequestError) as exc_info:
             session.check_response(method, 400, content)

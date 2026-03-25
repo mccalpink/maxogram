@@ -182,8 +182,10 @@ class TestPollingLoop:
 
         bot.side_effect = bot_call
 
-        with patch.object(polling._backoff, "wait", new_callable=AsyncMock) as mock_wait, \
-             patch.object(polling._backoff, "reset") as mock_reset:
+        with (
+            patch.object(polling._backoff, "wait", new_callable=AsyncMock) as mock_wait,
+            patch.object(polling._backoff, "reset") as mock_reset,
+        ):
             await polling.start()
 
             # Ошибка на 1-м вызове — backoff.wait()
@@ -376,5 +378,6 @@ class TestDropPendingUpdates:
             await polling.start()
             mock_logger.info.assert_any_call(
                 "Dropped %d pending update(s), marker set to %s",
-                2, 10,
+                2,
+                10,
             )

@@ -168,9 +168,7 @@ class TestFSMContextMiddlewareEventIsolation:
         """DisabledEventIsolation — handler выполняется нормально."""
         storage = MemoryStorage()
         isolation = DisabledEventIsolation()
-        mw = FSMContextMiddleware(
-            storage=storage, events_isolation=isolation
-        )
+        mw = FSMContextMiddleware(storage=storage, events_isolation=isolation)
 
         data: dict[str, Any] = {
             "bot": _FakeBot(bot_id=1),

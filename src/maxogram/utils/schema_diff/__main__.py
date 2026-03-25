@@ -35,23 +35,32 @@ def main() -> None:
         description="Compare Max Bot API OpenAPI schema with maxogram code",
     )
     parser.add_argument(
-        "--schema", type=Path, default=None,
+        "--schema",
+        type=Path,
+        default=None,
         help="Path to local OpenAPI YAML (default: download from GitHub)",
     )
     parser.add_argument(
-        "--output", type=Path, default=None,
+        "--output",
+        type=Path,
+        default=None,
         help="Write markdown report to file",
     )
     parser.add_argument(
-        "--generate", action="store_true",
+        "--generate",
+        action="store_true",
         help="Generate skeleton files for new types/methods",
     )
     parser.add_argument(
-        "--types-dir", type=Path, default=Path("src/maxogram/types"),
+        "--types-dir",
+        type=Path,
+        default=Path("src/maxogram/types"),
         help="Path to types/ directory (default: src/maxogram/types)",
     )
     parser.add_argument(
-        "--methods-dir", type=Path, default=Path("src/maxogram/methods"),
+        "--methods-dir",
+        type=Path,
+        default=Path("src/maxogram/methods"),
         help="Path to methods/ directory (default: src/maxogram/methods)",
     )
     args = parser.parse_args()

@@ -57,9 +57,7 @@ class CallableObject:
         self.params = frozenset(
             p.name for p in sig.parameters.values() if p.kind in _ACCEPTED_KINDS
         )
-        self.varkw = any(
-            p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
-        )
+        self.varkw = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())
 
     def _prepare_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Отфильтровать kwargs — оставить только объявленные параметры."""

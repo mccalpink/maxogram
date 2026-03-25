@@ -128,9 +128,7 @@ class StatesGroupMeta(type):
             all_states.extend(child.__all_states__)
 
         cls.__all_states__ = tuple(all_states)
-        cls.__all_states_names__ = tuple(
-            s.state for s in all_states if s.state is not None
-        )
+        cls.__all_states_names__ = tuple(s.state for s in all_states if s.state is not None)
 
         return cls
 

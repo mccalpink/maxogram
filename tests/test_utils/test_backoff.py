@@ -91,6 +91,7 @@ class TestBackoff:
         b = Backoff(cfg)
 
         delays: list[float] = []
+
         async def capture_sleep(d: float) -> None:
             delays.append(d)
 

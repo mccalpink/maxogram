@@ -140,12 +140,14 @@ class Bot:
         photo: PhotoAttachmentRequestPayload | None = None,
     ) -> BotInfo:
         """PATCH /me — Редактирование информации о боте."""
-        return await self(EditMyInfo(
-            name=name,
-            description=description,
-            commands=commands,
-            photo=photo,
-        ))
+        return await self(
+            EditMyInfo(
+                name=name,
+                description=description,
+                commands=commands,
+                photo=photo,
+            )
+        )
 
     # ------------------------------------------------------------------
     # Chat (7 методов)
@@ -176,13 +178,15 @@ class Bot:
         notify: bool | None = None,
     ) -> Chat:
         """PATCH /chats/{chatId} — Редактирование чата."""
-        return await self(EditChat(
-            chat_id=chat_id,
-            icon=icon,
-            title=title,
-            pin=pin,
-            notify=notify,
-        ))
+        return await self(
+            EditChat(
+                chat_id=chat_id,
+                icon=icon,
+                title=title,
+                pin=pin,
+                notify=notify,
+            )
+        )
 
     async def delete_chat(self, chat_id: int) -> SimpleQueryResult:
         """DELETE /chats/{chatId} — Удаление чата."""
@@ -215,11 +219,13 @@ class Bot:
         notify: bool = True,
     ) -> SimpleQueryResult:
         """PUT /chats/{chatId}/pin — Закрепить сообщение."""
-        return await self(PinMessage(
-            chat_id=chat_id,
-            message_id=message_id,
-            notify=notify,
-        ))
+        return await self(
+            PinMessage(
+                chat_id=chat_id,
+                message_id=message_id,
+                notify=notify,
+            )
+        )
 
     async def unpin_message(self, chat_id: int) -> SimpleQueryResult:
         """DELETE /chats/{chatId}/pin — Открепить сообщение."""
@@ -237,12 +243,14 @@ class Bot:
         count: int | None = None,
     ) -> ChatMembersList:
         """GET /chats/{chatId}/members — Список участников."""
-        return await self(GetMembers(
-            chat_id=chat_id,
-            user_ids=user_ids,
-            marker=marker,
-            count=count,
-        ))
+        return await self(
+            GetMembers(
+                chat_id=chat_id,
+                user_ids=user_ids,
+                marker=marker,
+                count=count,
+            )
+        )
 
     async def add_members(
         self,
@@ -259,11 +267,13 @@ class Bot:
         block: bool | None = None,
     ) -> SimpleQueryResult:
         """DELETE /chats/{chatId}/members — Удалить участника."""
-        return await self(RemoveMember(
-            chat_id=chat_id,
-            user_id=user_id,
-            block=block,
-        ))
+        return await self(
+            RemoveMember(
+                chat_id=chat_id,
+                user_id=user_id,
+                block=block,
+            )
+        )
 
     async def get_membership(self, chat_id: int) -> ChatMember:
         """GET /chats/{chatId}/members/me — Членство бота."""
@@ -297,16 +307,18 @@ class Bot:
         disable_link_preview: bool | None = None,
     ) -> SendMessageResult:
         """POST /messages — Отправка сообщения."""
-        return await self(SendMessage(
-            chat_id=chat_id,
-            user_id=user_id,
-            text=text,
-            attachments=attachments,
-            link=link,
-            notify=notify,
-            format=format,
-            disable_link_preview=disable_link_preview,
-        ))
+        return await self(
+            SendMessage(
+                chat_id=chat_id,
+                user_id=user_id,
+                text=text,
+                attachments=attachments,
+                link=link,
+                notify=notify,
+                format=format,
+                disable_link_preview=disable_link_preview,
+            )
+        )
 
     async def edit_message(
         self,
@@ -318,14 +330,16 @@ class Bot:
         format: TextFormat | None = None,  # noqa: A002
     ) -> SimpleQueryResult:
         """PUT /messages — Редактирование сообщения."""
-        return await self(EditMessage(
-            message_id=message_id,
-            text=text,
-            attachments=attachments,
-            link=link,
-            notify=notify,
-            format=format,
-        ))
+        return await self(
+            EditMessage(
+                message_id=message_id,
+                text=text,
+                attachments=attachments,
+                link=link,
+                notify=notify,
+                format=format,
+            )
+        )
 
     async def delete_message(self, message_id: str) -> SimpleQueryResult:
         """DELETE /messages — Удаление сообщения."""
@@ -340,13 +354,15 @@ class Bot:
         count: int | None = None,
     ) -> MessageList:
         """GET /messages — Получение сообщений."""
-        return await self(GetMessages(
-            chat_id=chat_id,
-            message_ids=message_ids,
-            from_=from_,
-            to=to,
-            count=count,
-        ))
+        return await self(
+            GetMessages(
+                chat_id=chat_id,
+                message_ids=message_ids,
+                from_=from_,
+                to=to,
+                count=count,
+            )
+        )
 
     async def get_message_by_id(self, message_id: str) -> Message:
         """GET /messages/{messageId} — Сообщение по ID."""
@@ -363,11 +379,13 @@ class Bot:
         notification: str | None = None,
     ) -> SimpleQueryResult:
         """POST /answers — Ответ на callback."""
-        return await self(AnswerOnCallback(
-            callback_id=callback_id,
-            message=message,
-            notification=notification,
-        ))
+        return await self(
+            AnswerOnCallback(
+                callback_id=callback_id,
+                message=message,
+                notification=notification,
+            )
+        )
 
     async def construct(
         self,
@@ -380,15 +398,17 @@ class Bot:
         placeholder: str | None = None,
     ) -> SimpleQueryResult:
         """POST /answers/constructor — Ответ конструктора."""
-        return await self(Construct(
-            session_id=session_id,
-            messages=messages,
-            allow_user_input=allow_user_input,
-            hint=hint,
-            data=data,
-            keyboard=keyboard,
-            placeholder=placeholder,
-        ))
+        return await self(
+            Construct(
+                session_id=session_id,
+                messages=messages,
+                allow_user_input=allow_user_input,
+                hint=hint,
+                data=data,
+                keyboard=keyboard,
+                placeholder=placeholder,
+            )
+        )
 
     # ------------------------------------------------------------------
     # Subscription (3 метода)
@@ -405,11 +425,13 @@ class Bot:
         version: str | None = None,
     ) -> SimpleQueryResult:
         """POST /subscriptions — Создать webhook-подписку."""
-        return await self(Subscribe(
-            url=url,
-            update_types=update_types,
-            version=version,
-        ))
+        return await self(
+            Subscribe(
+                url=url,
+                update_types=update_types,
+                version=version,
+            )
+        )
 
     async def unsubscribe(self, url: str) -> SimpleQueryResult:
         """DELETE /subscriptions — Удалить webhook-подписку."""
@@ -435,9 +457,11 @@ class Bot:
         types: list[str] | None = None,
     ) -> GetUpdatesResult:
         """GET /updates — Long polling для получения обновлений."""
-        return await self(GetUpdates(
-            limit=limit,
-            timeout=timeout,
-            marker=marker,
-            types=types,
-        ))
+        return await self(
+            GetUpdates(
+                limit=limit,
+                timeout=timeout,
+                marker=marker,
+                types=types,
+            )
+        )

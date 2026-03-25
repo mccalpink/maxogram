@@ -153,17 +153,13 @@ class TestMaxServerError:
     """Тесты 5xx Server Error."""
 
     def test_status_code_500(self) -> None:
-        err = MaxServerError(
-            status_code=500, error=None, error_message="Internal server error"
-        )
+        err = MaxServerError(status_code=500, error=None, error_message="Internal server error")
         assert err.status_code == 500
         assert err.error is None
         assert "500" in str(err)
 
     def test_status_code_502(self) -> None:
-        err = MaxServerError(
-            status_code=502, error="bad.gateway", error_message="Bad Gateway"
-        )
+        err = MaxServerError(status_code=502, error="bad.gateway", error_message="Bad Gateway")
         assert err.status_code == 502
         assert err.error == "bad.gateway"
 

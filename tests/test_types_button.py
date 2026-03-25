@@ -43,9 +43,7 @@ class TestButtonDiscriminator:
         assert obj.url == "https://example.com"
 
     def test_request_contact(self) -> None:
-        obj = button_adapter.validate_python(
-            {"type": "request_contact", "text": "Share contact"}
-        )
+        obj = button_adapter.validate_python({"type": "request_contact", "text": "Share contact"})
         assert isinstance(obj, RequestContactButton)
 
     def test_request_geo_location(self) -> None:

@@ -325,11 +325,13 @@ class TestResumableUploadResume:
 
         # Первый upload: 2 чанка отправлены, 3-й падает
         session = bot.session._get_session.return_value
-        session.post = MagicMock(side_effect=[
-            _make_async_cm(_make_response()),
-            _make_async_cm(_make_response()),
-            _make_async_cm(_make_response(status=500, json_data={"error": "server error"})),
-        ])
+        session.post = MagicMock(
+            side_effect=[
+                _make_async_cm(_make_response()),
+                _make_async_cm(_make_response()),
+                _make_async_cm(_make_response(status=500, json_data={"error": "server error"})),
+            ]
+        )
 
         ru = ResumableUpload(
             upload_url="https://upload.example.com/abc",
@@ -345,9 +347,11 @@ class TestResumableUploadResume:
         assert ru.is_complete is False
 
         # Resume — отправляем оставшийся чанк
-        session.post = MagicMock(side_effect=[
-            _make_async_cm(_make_response(json_data={"token": "token_resumed"})),
-        ])
+        session.post = MagicMock(
+            side_effect=[
+                _make_async_cm(_make_response(json_data={"token": "token_resumed"})),
+            ]
+        )
 
         token = await ru.upload(bot, data)
 
@@ -366,10 +370,12 @@ class TestResumableUploadResume:
 
         # Первый чанк OK, второй fail
         session = bot.session._get_session.return_value
-        session.post = MagicMock(side_effect=[
-            _make_async_cm(_make_response()),
-            _make_async_cm(_make_response(status=500)),
-        ])
+        session.post = MagicMock(
+            side_effect=[
+                _make_async_cm(_make_response()),
+                _make_async_cm(_make_response(status=500)),
+            ]
+        )
 
         ru = ResumableUpload(
             upload_url="https://upload.example.com/abc",
@@ -486,9 +492,7 @@ class TestResumableInputFile:
         def on_progress(sent: int, total: int) -> None:
             progress_calls.append((sent, total))
 
-        f = ResumableInputFile(
-            filepath, chunk_size=10, threshold=20, on_progress=on_progress
-        )
+        f = ResumableInputFile(filepath, chunk_size=10, threshold=20, on_progress=on_progress)
         await f.upload(bot)
 
         assert len(progress_calls) == 3
@@ -615,7 +619,8 @@ class TestResumableEdgeCases:
 
         session = bot.session._get_session.return_value
         resp_500 = _make_response(
-            status=500, json_data={"error": "Internal Server Error"},
+            status=500,
+            json_data={"error": "Internal Server Error"},
         )
         session.post = MagicMock(side_effect=[_make_async_cm(resp_500)])
 

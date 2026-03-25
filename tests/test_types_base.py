@@ -31,9 +31,7 @@ class TestMaxObject:
 
     def test_extra_allow(self) -> None:
         """Новые поля от API не вызывают ошибку."""
-        obj = ChildObject.model_validate(
-            {"name": "test", "value": 1, "unknown_field": "extra"}
-        )
+        obj = ChildObject.model_validate({"name": "test", "value": 1, "unknown_field": "extra"})
         assert obj.name == "test"
 
     def test_bot_not_set_raises(self) -> None:

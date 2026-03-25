@@ -89,9 +89,7 @@ class TestMongoStorageState:
         }
         assert await storage.get_state(key) == "Form:name"
 
-    async def test_set_state(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_set_state(self, storage: MongoStorage, collection: MagicMock) -> None:
         """set_state сохраняет состояние через replace_one(upsert=True)."""
         key = _make_key()
         doc_key = _build_mongo_key(key)
@@ -177,9 +175,7 @@ class TestMongoStorageData:
         }
         assert await storage.get_data(key) == {"name": "Alice", "age": 30}
 
-    async def test_set_data(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_set_data(self, storage: MongoStorage, collection: MagicMock) -> None:
         """set_data сохраняет данные через replace_one(upsert=True)."""
         key = _make_key()
         doc_key = _build_mongo_key(key)
@@ -208,9 +204,7 @@ class TestMongoStorageData:
         assert doc["state"] == "Form:name"
         assert doc["data"] == {"new": True}
 
-    async def test_set_empty_data(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_set_empty_data(self, storage: MongoStorage, collection: MagicMock) -> None:
         """set_data с пустыми данными сохраняет пустой dict."""
         key = _make_key()
         collection.find_one.return_value = None
@@ -237,9 +231,7 @@ class TestMongoStorageData:
         doc = call_args[0][1]
         assert doc["data"] == complex_data
 
-    async def test_update_data_merge(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_update_data_merge(self, storage: MongoStorage, collection: MagicMock) -> None:
         """update_data мержит данные (через BaseStorage)."""
         key = _make_key()
         doc_key = _build_mongo_key(key)
@@ -252,18 +244,14 @@ class TestMongoStorageData:
         result = await storage.update_data(key, {"b": 2})
         assert result == {"a": 1, "b": 2}
 
-    async def test_update_data_kwargs(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_update_data_kwargs(self, storage: MongoStorage, collection: MagicMock) -> None:
         """update_data принимает kwargs."""
         key = _make_key()
         collection.find_one.return_value = None
         result = await storage.update_data(key, name="Alice", age=30)
         assert result == {"name": "Alice", "age": 30}
 
-    async def test_get_value(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_get_value(self, storage: MongoStorage, collection: MagicMock) -> None:
         """get_value возвращает одно значение."""
         key = _make_key()
         doc_key = _build_mongo_key(key)
@@ -274,9 +262,7 @@ class TestMongoStorageData:
         }
         assert await storage.get_value(key, "name") == "Alice"
 
-    async def test_get_value_default(
-        self, storage: MongoStorage, collection: MagicMock
-    ) -> None:
+    async def test_get_value_default(self, storage: MongoStorage, collection: MagicMock) -> None:
         """get_value возвращает default, если ключа нет."""
         key = _make_key()
         collection.find_one.return_value = None
@@ -307,9 +293,7 @@ class TestMongoStorageFromUrl:
 
     async def test_from_url_creates_storage(self) -> None:
         """from_url создаёт MongoStorage с motor client."""
-        with patch(
-            "motor.motor_asyncio.AsyncIOMotorClient"
-        ) as mock_cls:
+        with patch("motor.motor_asyncio.AsyncIOMotorClient") as mock_cls:
             mock_client = _mock_client()
             mock_cls.return_value = mock_client
             storage = MongoStorage.from_url("mongodb://localhost:27017/test_db")
@@ -319,9 +303,7 @@ class TestMongoStorageFromUrl:
 
     async def test_from_url_with_params(self) -> None:
         """from_url передаёт параметры."""
-        with patch(
-            "motor.motor_asyncio.AsyncIOMotorClient"
-        ) as mock_cls:
+        with patch("motor.motor_asyncio.AsyncIOMotorClient") as mock_cls:
             mock_client = _mock_client()
             mock_cls.return_value = mock_client
             storage = MongoStorage.from_url(
@@ -335,9 +317,7 @@ class TestMongoStorageFromUrl:
 
     async def test_from_url_default_database(self) -> None:
         """from_url использует 'maxogram' как базу по умолчанию."""
-        with patch(
-            "motor.motor_asyncio.AsyncIOMotorClient"
-        ) as mock_cls:
+        with patch("motor.motor_asyncio.AsyncIOMotorClient") as mock_cls:
             mock_cls.return_value = _mock_client()
             storage = MongoStorage.from_url("mongodb://localhost:27017")
             assert storage._database_name == "maxogram"

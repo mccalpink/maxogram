@@ -15,7 +15,6 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 class TestFullPipeline:
-
     def test_parse_compare_report(self) -> None:
         """Full cycle: schema + code → diff → report."""
         schema = parse_schema(FIXTURES / "mini_schema.yaml")

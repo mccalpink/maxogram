@@ -40,9 +40,7 @@ class I18nMiddleware(BaseMiddleware):
         self,
         *,
         i18n: I18n,
-        locale_resolver: (
-            Callable[[Any, dict[str, Any]], Awaitable[str]] | None
-        ) = None,
+        locale_resolver: (Callable[[Any, dict[str, Any]], Awaitable[str]] | None) = None,
     ) -> None:
         self._i18n = i18n
         self._locale_resolver = locale_resolver

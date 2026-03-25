@@ -101,13 +101,9 @@ class TestMessageCallback:
     @pytest.mark.asyncio
     async def test_with_message(self) -> None:
         user = _make_user(user_id=20)
-        callback = Callback(
-            timestamp=0, callback_id="cb1", payload="data", user=user
-        )
+        callback = Callback(timestamp=0, callback_id="cb1", payload="data", user=user)
         message = _make_message(chat_id=300)
-        update = MessageCallbackUpdate(
-            timestamp=0, callback=callback, message=message
-        )
+        update = MessageCallbackUpdate(timestamp=0, callback=callback, message=message)
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})
@@ -119,9 +115,7 @@ class TestMessageCallback:
     async def test_without_message(self) -> None:
         user = _make_user(user_id=21)
         callback = Callback(timestamp=0, callback_id="cb2", user=user)
-        update = MessageCallbackUpdate(
-            timestamp=0, callback=callback, message=None
-        )
+        update = MessageCallbackUpdate(timestamp=0, callback=callback, message=None)
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})
@@ -151,9 +145,7 @@ class TestMessageRemoved:
 
     @pytest.mark.asyncio
     async def test_extracts_chat_no_user(self) -> None:
-        update = MessageRemovedUpdate(
-            timestamp=0, message_id="msg1", chat_id=500, user_id=99
-        )
+        update = MessageRemovedUpdate(timestamp=0, message_id="msg1", chat_id=500, user_id=99)
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})
@@ -163,9 +155,7 @@ class TestMessageRemoved:
 
     @pytest.mark.asyncio
     async def test_no_chat_id(self) -> None:
-        update = MessageRemovedUpdate(
-            timestamp=0, message_id="msg2", chat_id=None
-        )
+        update = MessageRemovedUpdate(timestamp=0, message_id="msg2", chat_id=None)
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})
@@ -210,9 +200,7 @@ class TestMessageConstructionRequest:
     @pytest.mark.asyncio
     async def test_extracts_user_no_chat(self) -> None:
         user = _make_user(user_id=70)
-        update = MessageConstructionRequestUpdate(
-            timestamp=0, user=user, session_id="sess1"
-        )
+        update = MessageConstructionRequestUpdate(timestamp=0, user=user, session_id="sess1")
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})
@@ -316,9 +304,7 @@ class TestChatTitleChanged:
     @pytest.mark.asyncio
     async def test_extracts_user_and_chat(self) -> None:
         user = _make_user(user_id=85)
-        update = ChatTitleChangedUpdate(
-            timestamp=0, chat_id=850, user=user, title="New Title"
-        )
+        update = ChatTitleChangedUpdate(timestamp=0, chat_id=850, user=user, title="New Title")
 
         mw = MaxContextMiddleware()
         result = await mw(_capture_handler, update, {})

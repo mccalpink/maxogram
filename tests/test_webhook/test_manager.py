@@ -28,9 +28,7 @@ def _make_dispatcher() -> MagicMock:
     dp.feed_update = AsyncMock()
     dp.emit_startup = AsyncMock()
     dp.emit_shutdown = AsyncMock()
-    dp.resolve_used_update_types = MagicMock(
-        return_value=["message_created", "bot_started"]
-    )
+    dp.resolve_used_update_types = MagicMock(return_value=["message_created", "bot_started"])
     return dp
 
 
@@ -120,9 +118,7 @@ class TestWebhookManagerSubscription:
         assert call_kwargs.kwargs["url"] == "https://example.com/webhook"
 
     @pytest.mark.asyncio
-    async def test_unsubscribe_called(
-        self, dispatcher: MagicMock, bot: AsyncMock
-    ) -> None:
+    async def test_unsubscribe_called(self, dispatcher: MagicMock, bot: AsyncMock) -> None:
         """При остановке вызывается bot.unsubscribe()."""
         from maxogram.webhook.manager import WebhookManager
 
@@ -176,9 +172,7 @@ class TestWebhookManagerAutoReconnect:
     """Тесты auto-reconnect (переподписка по таймеру)."""
 
     @pytest.mark.asyncio
-    async def test_resubscribe_task_created(
-        self, dispatcher: MagicMock, bot: AsyncMock
-    ) -> None:
+    async def test_resubscribe_task_created(self, dispatcher: MagicMock, bot: AsyncMock) -> None:
         """_start_resubscribe_loop создаёт background task."""
         from maxogram.webhook.manager import WebhookManager
 

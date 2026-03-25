@@ -226,12 +226,7 @@ class TestFluentApi:
         """add() и row() возвращают self."""
         btn1 = CallbackButton(text="A", payload="a")
         btn2 = CallbackButton(text="B", payload="b")
-        result = (
-            InlineKeyboardBuilder()
-            .add(btn1)
-            .row(btn2)
-            .as_keyboard()
-        )
+        result = InlineKeyboardBuilder().add(btn1).row(btn2).as_keyboard()
         assert len(result.buttons) == 2
 
 

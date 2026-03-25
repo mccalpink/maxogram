@@ -22,21 +22,23 @@ __all__ = ["WebhookHandler"]
 _update_adapter: TypeAdapter[Update] = TypeAdapter(Update)
 
 # Типы update, которые мы умеем парсить
-_KNOWN_UPDATE_TYPES = frozenset({
-    "message_created",
-    "message_callback",
-    "message_edited",
-    "message_removed",
-    "message_chat_created",
-    "message_construction_request",
-    "message_constructed",
-    "bot_started",
-    "bot_added",
-    "bot_removed",
-    "user_added",
-    "user_removed",
-    "chat_title_changed",
-})
+_KNOWN_UPDATE_TYPES = frozenset(
+    {
+        "message_created",
+        "message_callback",
+        "message_edited",
+        "message_removed",
+        "message_chat_created",
+        "message_construction_request",
+        "message_constructed",
+        "bot_started",
+        "bot_added",
+        "bot_removed",
+        "user_added",
+        "user_removed",
+        "chat_title_changed",
+    }
+)
 
 
 class WebhookHandler:

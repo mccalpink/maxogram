@@ -10,9 +10,13 @@ def _sample_diff() -> DiffResult:
     return DiffResult(
         type_diffs=[
             TypeDiff(name="Chat", kind="new", field_diffs=[]),
-            TypeDiff(name="User", kind="changed", field_diffs=[
-                FieldDiff(name="email", kind="added", schema_type="string", code_type=None),
-            ]),
+            TypeDiff(
+                name="User",
+                kind="changed",
+                field_diffs=[
+                    FieldDiff(name="email", kind="added", schema_type="string", code_type=None),
+                ],
+            ),
         ],
         method_diffs=[
             MethodDiff(name="pinMessage", kind="new", details="PUT /chats/{chatId}/pin"),
@@ -23,7 +27,6 @@ def _sample_diff() -> DiffResult:
 
 
 class TestToTerminal:
-
     def test_contains_new_type(self) -> None:
         output = to_terminal(_sample_diff())
         assert "Chat" in output
@@ -52,7 +55,6 @@ class TestToTerminal:
 
 
 class TestToMarkdown:
-
     def test_is_valid_markdown(self) -> None:
         output = to_markdown(_sample_diff())
         assert output.startswith("#")

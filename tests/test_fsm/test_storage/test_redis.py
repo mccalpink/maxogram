@@ -387,9 +387,7 @@ class TestDefaultKeyBuilder:
 class TestRedisEventIsolation:
     """RedisEventIsolation — distributed lock через Redis."""
 
-    async def test_lock_executes_body(
-        self, redis_client: fakeredis.FakeAsyncRedis
-    ) -> None:
+    async def test_lock_executes_body(self, redis_client: fakeredis.FakeAsyncRedis) -> None:
         """lock() выполняет тело контекстного менеджера."""
         isolation = RedisEventIsolation(redis=redis_client)
         key = _make_key()
@@ -420,9 +418,7 @@ class TestRedisEventIsolation:
         isolation = RedisEventIsolation(redis=redis_client)
         await isolation.close()
 
-    async def test_custom_key_builder(
-        self, redis_client: fakeredis.FakeAsyncRedis
-    ) -> None:
+    async def test_custom_key_builder(self, redis_client: fakeredis.FakeAsyncRedis) -> None:
         """RedisEventIsolation принимает кастомный key_builder."""
         builder = DefaultKeyBuilder(prefix="custom")
         isolation = RedisEventIsolation(redis=redis_client, key_builder=builder)

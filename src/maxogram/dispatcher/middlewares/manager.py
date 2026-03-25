@@ -41,9 +41,7 @@ class MiddlewareManager(Sequence[MiddlewareType]):
     def __call__(self, middleware: MiddlewareType) -> MiddlewareType: ...
 
     @overload
-    def __call__(
-        self, middleware: None = None
-    ) -> Callable[[MiddlewareType], MiddlewareType]: ...
+    def __call__(self, middleware: None = None) -> Callable[[MiddlewareType], MiddlewareType]: ...
 
     def __call__(
         self, middleware: MiddlewareType | None = None
@@ -80,9 +78,7 @@ class MiddlewareManager(Sequence[MiddlewareType]):
     @overload
     def __getitem__(self, index: slice) -> Sequence[MiddlewareType]: ...
 
-    def __getitem__(
-        self, index: int | slice
-    ) -> MiddlewareType | Sequence[MiddlewareType]:
+    def __getitem__(self, index: int | slice) -> MiddlewareType | Sequence[MiddlewareType]:
         return self._middlewares[index]
 
     def __eq__(self, other: object) -> bool:

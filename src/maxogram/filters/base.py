@@ -21,8 +21,7 @@ class Filter(ABC):
     """
 
     @abstractmethod
-    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
-        ...
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]: ...
 
     def __invert__(self) -> _InvertFilter:
         """``~Filter()`` — инвертированный фильтр."""

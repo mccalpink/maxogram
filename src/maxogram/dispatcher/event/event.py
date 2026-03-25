@@ -30,7 +30,8 @@ class EventObserver:
         return callback
 
     def __call__(
-        self, callback: CallbackType | None = None,
+        self,
+        callback: CallbackType | None = None,
     ) -> CallbackType | Callable[[CallbackType], CallbackType]:
         """Декоратор для регистрации callback.
 

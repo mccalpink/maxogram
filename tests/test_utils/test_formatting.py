@@ -399,7 +399,9 @@ class TestEdgeCases:
 
     def test_multiple_links(self) -> None:
         """Несколько Link подряд — каждый со своим url."""
-        node = Link("google", url="https://google.com") + Text(" ") + Link("ya", url="https://ya.ru")
+        node = (
+            Link("google", url="https://google.com") + Text(" ") + Link("ya", url="https://ya.ru")
+        )
         text, markup = node.render()
         assert text == "google ya"
         assert len(markup) == 2

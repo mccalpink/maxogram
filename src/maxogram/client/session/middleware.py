@@ -112,7 +112,7 @@ class RetryMiddleware(RequestMiddleware):
 
     def _calculate_delay(self, attempt: int) -> float:
         """Рассчитать задержку с exponential backoff."""
-        delay = self._base_delay * (self._backoff_factor ** attempt)
+        delay = self._base_delay * (self._backoff_factor**attempt)
         return min(delay, self._max_delay)
 
 

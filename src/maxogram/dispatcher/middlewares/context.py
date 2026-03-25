@@ -69,11 +69,7 @@ class MaxContextMiddleware(BaseMiddleware):
 
         if update_type == "message_chat_created":
             chat_dict = getattr(event, "chat", None)
-            chat_id = (
-                chat_dict.get("chat_id")
-                if isinstance(chat_dict, dict)
-                else None
-            )
+            chat_id = chat_dict.get("chat_id") if isinstance(chat_dict, dict) else None
             return None, chat_id
 
         if update_type == "message_construction_request":

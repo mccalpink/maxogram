@@ -74,6 +74,7 @@ class TestMaxEventObserverRegister:
         async def callback(event: object) -> None: ...
         async def f1(event: object) -> bool:
             return True
+
         async def f2(event: object) -> bool:
             return True
 
@@ -355,6 +356,7 @@ class TestMaxEventObserverRootFilter:
 
         async def f1(event: object) -> bool:
             return True
+
         async def f2(event: object) -> bool:
             return True
 

@@ -220,7 +220,10 @@ class TestWebhookHandlerPost:
 
     @pytest.mark.asyncio
     async def test_bot_passed_to_feed_update(
-        self, client: Any, dispatcher: MagicMock, bot: AsyncMock,
+        self,
+        client: Any,
+        dispatcher: MagicMock,
+        bot: AsyncMock,
     ) -> None:
         """Bot передаётся первым аргументом в feed_update."""
         payload = _message_created_payload()
@@ -244,7 +247,9 @@ class TestWebhookHandlerPost:
 
     @pytest.mark.asyncio
     async def test_missing_update_type_returns_400(
-        self, client: Any, dispatcher: MagicMock,
+        self,
+        client: Any,
+        dispatcher: MagicMock,
     ) -> None:
         """Отсутствие update_type возвращает 400."""
         payload = {"timestamp": 1711000000000, "message": {}}
@@ -256,7 +261,9 @@ class TestWebhookHandlerPost:
 
     @pytest.mark.asyncio
     async def test_unknown_update_type_returns_200(
-        self, client: Any, dispatcher: MagicMock,
+        self,
+        client: Any,
+        dispatcher: MagicMock,
     ) -> None:
         """Неизвестный update_type: возвращаем 200 (не блокируем Max API), но не обрабатываем."""
         payload = {

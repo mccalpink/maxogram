@@ -45,9 +45,7 @@ class TestMarkupDiscriminator:
         assert obj.url == "https://example.com"
 
     def test_strikethrough(self) -> None:
-        obj = markup_adapter.validate_python(
-            {"type": "strikethrough", "from": 0, "length": 3}
-        )
+        obj = markup_adapter.validate_python({"type": "strikethrough", "from": 0, "length": 3})
         assert isinstance(obj, StrikethroughMarkup)
 
     def test_underline(self) -> None:
@@ -66,9 +64,7 @@ class TestMarkupDiscriminator:
         assert isinstance(obj, HeadingMarkup)
 
     def test_highlighted(self) -> None:
-        obj = markup_adapter.validate_python(
-            {"type": "highlighted", "from": 0, "length": 5}
-        )
+        obj = markup_adapter.validate_python({"type": "highlighted", "from": 0, "length": 5})
         assert isinstance(obj, HighlightedMarkup)
 
 

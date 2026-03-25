@@ -7,6 +7,7 @@ from typing import Literal  # noqa: TCH003
 
 # --- Schema-side (из OpenAPI YAML) ---
 
+
 @dataclass
 class SchemaField:
     """Поле типа из OpenAPI schema."""
@@ -50,6 +51,7 @@ class ParsedSchema:
 
 # --- Code-side (из Python AST) ---
 
+
 @dataclass
 class CodeField:
     """Поле класса из Python-кода."""
@@ -92,6 +94,7 @@ class ParsedCode:
 
 
 # --- Diff ---
+
 
 @dataclass
 class FieldDiff:

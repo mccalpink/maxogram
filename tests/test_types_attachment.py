@@ -89,11 +89,7 @@ class TestAttachmentDiscriminator:
     def test_inline_keyboard(self) -> None:
         data = {
             "type": "inline_keyboard",
-            "payload": {
-                "buttons": [
-                    [{"type": "callback", "text": "OK", "payload": "ok"}]
-                ]
-            },
+            "payload": {"buttons": [[{"type": "callback", "text": "OK", "payload": "ok"}]]},
         }
         obj = attachment_adapter.validate_python(data)
         assert isinstance(obj, InlineKeyboardAttachment)

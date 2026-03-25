@@ -43,6 +43,7 @@ def compare(schema: ParsedSchema, code: ParsedCode) -> DiffResult:
 
 # --- Типы ---
 
+
 def _compare_types(schema: ParsedSchema, code: ParsedCode, result: DiffResult) -> None:
     """Сравнить типы schema vs code."""
     matched_code_names: set[str] = set()
@@ -63,9 +64,13 @@ def _compare_types(schema: ParsedSchema, code: ParsedCode, result: DiffResult) -
             matched_code_names.add(schema_name)
             field_diffs = _compare_fields(schema_type, code_type)
             if field_diffs:
-                result.type_diffs.append(TypeDiff(
-                    name=schema_name, kind="changed", field_diffs=field_diffs,
-                ))
+                result.type_diffs.append(
+                    TypeDiff(
+                        name=schema_name,
+                        kind="changed",
+                        field_diffs=field_diffs,
+                    )
+                )
 
     # Типы в code, которых нет в schema
     for code_name in code.types:
@@ -94,6 +99,7 @@ def _compare_union(
 
 # --- Поля ---
 
+
 def _compare_fields(schema_type: SchemaType, code_type: CodeType) -> list[FieldDiff]:
     """Сравнить поля типа. Возвращает список различий."""
     diffs: list[FieldDiff] = []
@@ -111,30 +117,38 @@ def _compare_fields(schema_type: SchemaType, code_type: CodeType) -> list[FieldD
         cf = code_by_alias.get(sf.name) or code_by_name.get(sf.name)
 
         if cf is None:
-            diffs.append(FieldDiff(
-                name=sf.name, kind="added",
-                schema_type=sf.type_str, code_type=None,
-            ))
+            diffs.append(
+                FieldDiff(
+                    name=sf.name,
+                    kind="added",
+                    schema_type=sf.type_str,
+                    code_type=None,
+                )
+            )
         else:
             matched_code_fields.add(cf.name)
             expected_code_type = _TYPE_MAP.get(sf.type_str, sf.type_str)
             if cf.type_str != expected_code_type:
-                diffs.append(FieldDiff(
-                    name=sf.name, kind="changed",
-                    schema_type=sf.type_str, code_type=cf.type_str,
-                ))
+                diffs.append(
+                    FieldDiff(
+                        name=sf.name,
+                        kind="changed",
+                        schema_type=sf.type_str,
+                        code_type=cf.type_str,
+                    )
+                )
 
     return diffs
 
 
 # --- Методы ---
 
+
 def _compare_methods(schema: ParsedSchema, code: ParsedCode, result: DiffResult) -> None:
     """Сравнить методы schema vs code по паре (path, http_method)."""
     # Строим lookup кода: (api_path, http_method) → CodeMethod
     code_by_endpoint: dict[tuple[str, str], object] = {
-        (m.api_path, m.http_method): m
-        for m in code.methods.values()
+        (m.api_path, m.http_method): m for m in code.methods.values()
     }
 
     for schema_name, sm in schema.methods.items():

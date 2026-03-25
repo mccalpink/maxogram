@@ -64,9 +64,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 bot_id = getattr(me, "user_id", 0)
 
         # Применяем стратегию
-        effective_chat_id, effective_user_id = apply_strategy(
-            self.strategy, chat_id, user_id
-        )
+        effective_chat_id, effective_user_id = apply_strategy(self.strategy, chat_id, user_id)
 
         # Создаём StorageKey и FSMContext
         key = StorageKey(

@@ -28,10 +28,7 @@ class ErrorEvent:
         self.exception = exception
 
     def __repr__(self) -> str:
-        return (
-            f"ErrorEvent(update={self.update!r}, "
-            f"exception={self.exception!r})"
-        )
+        return f"ErrorEvent(update={self.update!r}, exception={self.exception!r})"
 
 
 class ErrorsMiddleware(BaseMiddleware):

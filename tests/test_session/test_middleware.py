@@ -92,9 +92,7 @@ class TestRetryMiddleware:
         mw = RetryMiddleware(max_retries=2, base_delay=0.01)
         make_request = AsyncMock(
             side_effect=[
-                MaxServerError(
-                    status_code=500, error="err", error_message="Internal"
-                ),
+                MaxServerError(status_code=500, error="err", error_message="Internal"),
                 "ok",
             ]
         )
@@ -147,9 +145,7 @@ class TestRetryMiddleware:
     async def test_max_retries_exceeded(self) -> None:
         """Если max_retries исчерпан — пробрасывает исключение."""
         mw = RetryMiddleware(max_retries=2, base_delay=0.01)
-        error = MaxServerError(
-            status_code=503, error="err", error_message="Service Unavailable"
-        )
+        error = MaxServerError(status_code=503, error="err", error_message="Service Unavailable")
         make_request = AsyncMock(side_effect=error)
         bot = _make_bot()
         method = _make_method()
@@ -165,9 +161,7 @@ class TestRetryMiddleware:
 
         mw = RetryMiddleware(max_retries=3, base_delay=0.01)
         make_request = AsyncMock(
-            side_effect=MaxBadRequestError(
-                error="bad", error_message="Bad request"
-            )
+            side_effect=MaxBadRequestError(error="bad", error_message="Bad request")
         )
         bot = _make_bot()
         method = _make_method()
@@ -194,9 +188,7 @@ class TestRetryMiddleware:
 
     async def test_max_delay_cap(self) -> None:
         """Задержка не превышает max_delay."""
-        mw = RetryMiddleware(
-            max_retries=10, base_delay=10.0, backoff_factor=10.0, max_delay=5.0
-        )
+        mw = RetryMiddleware(max_retries=10, base_delay=10.0, backoff_factor=10.0, max_delay=5.0)
         # delay = min(base * factor^attempt, max_delay)
         # 10 * 10^0 = 10, но max_delay=5.0
         assert mw._max_delay == 5.0
@@ -223,20 +215,14 @@ class TestLoggingMiddleware:
         assert result == "result"
         assert make_request.call_count == 1
         # Должны быть записи о запросе и ответе
-        assert any(
-            "request" in r.message.lower() for r in caplog.records
-        )
-        assert any(
-            "response" in r.message.lower() for r in caplog.records
-        )
+        assert any("request" in r.message.lower() for r in caplog.records)
+        assert any("response" in r.message.lower() for r in caplog.records)
 
     async def test_logs_error(self, caplog: Any) -> None:
         """Логирует ошибку при неудачном запросе."""
         mw = LoggingMiddleware()
         make_request = AsyncMock(
-            side_effect=MaxServerError(
-                status_code=500, error="err", error_message="Internal"
-            )
+            side_effect=MaxServerError(status_code=500, error="err", error_message="Internal")
         )
         bot = _make_bot()
         method = _make_method()
@@ -249,8 +235,7 @@ class TestLoggingMiddleware:
 
         # Должна быть запись об ошибке
         assert any(
-            "error" in r.message.lower() or r.levelno >= logging.ERROR
-            for r in caplog.records
+            "error" in r.message.lower() or r.levelno >= logging.ERROR for r in caplog.records
         )
 
     async def test_custom_logger_name(self, caplog: Any) -> None:
@@ -280,9 +265,7 @@ class TestLoggingMiddleware:
         """LoggingMiddleware пробрасывает исключение."""
         mw = LoggingMiddleware()
         make_request = AsyncMock(
-            side_effect=MaxServerError(
-                status_code=502, error="err", error_message="Bad Gateway"
-            )
+            side_effect=MaxServerError(status_code=502, error="err", error_message="Bad Gateway")
         )
         bot = _make_bot()
         method = _make_method()
@@ -338,9 +321,7 @@ class TestMiddlewareChain:
         second = SecondMiddleware()
 
         # Wrapping: создаём callable, оборачивающий make_request
-        async def wrapped_by_first(
-            b: Any, m: Any, t: float | None = None
-        ) -> Any:
+        async def wrapped_by_first(b: Any, m: Any, t: float | None = None) -> Any:
             return await first(make_request, b, m, t)
 
         result = await second(wrapped_by_first, bot, method)

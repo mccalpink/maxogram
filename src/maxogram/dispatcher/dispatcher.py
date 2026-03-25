@@ -163,9 +163,7 @@ class Dispatcher(Router):
 
         async with self._running_lock:
             if allowed_updates is None:
-                allowed_updates = self.resolve_used_update_types(
-                    skip_events={"update", "error"}
-                )
+                allowed_updates = self.resolve_used_update_types(skip_events={"update", "error"})
 
             self._pollings = [
                 Polling(

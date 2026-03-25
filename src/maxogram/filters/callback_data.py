@@ -90,10 +90,7 @@ class CallbackData(BaseModel):
         values = parts[1:]
 
         if len(values) != len(field_names):
-            msg = (
-                f"Wrong number of fields: expected {len(field_names)}, "
-                f"got {len(values)}"
-            )
+            msg = f"Wrong number of fields: expected {len(field_names)}, got {len(values)}"
             raise ValueError(msg)
 
         # Собрать kwargs для конструктора

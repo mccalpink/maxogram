@@ -166,9 +166,7 @@ class TestSceneRegistryRouting:
         await scene.enter(ctx)
 
         # Проверяем что хендлер сцены работает
-        result = await scene.propagate_event(
-            "message_created", "test", handler=None
-        )
+        result = await scene.propagate_event("message_created", "test", handler=None)
         assert result == "ok"
         assert results == ["product_handler"]
 

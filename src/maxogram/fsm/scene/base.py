@@ -54,9 +54,7 @@ class SceneMeta(type):
         cls = super().__new__(mcs, name, bases, namespace, **kwargs)
 
         # Пропускаем базовый класс Scene
-        if name == "Scene" and not any(
-            hasattr(b, "__scene_state__") for b in bases
-        ):
+        if name == "Scene" and not any(hasattr(b, "__scene_state__") for b in bases):
             return cls
 
         # Наследуем state от родительского класса если не указан явно
@@ -70,12 +68,9 @@ class SceneMeta(type):
             # Проверяем: это промежуточный класс (абстрактный)?
             # Промежуточный = наследует Scene напрямую и не имеет state
             is_intermediate = any(
-                hasattr(b, "__scene_state__") or b.__name__ == "Scene"
-                for b in bases
+                hasattr(b, "__scene_state__") or b.__name__ == "Scene" for b in bases
             ) and not any(
-                hasattr(b, "__scene_state__")
-                and b.__scene_state__ is not None
-                for b in bases
+                hasattr(b, "__scene_state__") and b.__scene_state__ is not None for b in bases
             )
             if is_intermediate:
                 cls.__scene_state__ = None  # type: ignore[attr-defined]

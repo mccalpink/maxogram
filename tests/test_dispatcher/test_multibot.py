@@ -157,7 +157,8 @@ class TestStartPollingMultiBot:
         bot2.side_effect = bot_call
 
         await dp.start_polling(
-            bot1, bot2,
+            bot1,
+            bot2,
             handle_signals=False,
             close_bot_session=False,
         )

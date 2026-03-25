@@ -98,19 +98,13 @@ def validate_init_data(
 
     # data_check_string: key=value пары отсортированные по ключу, через \n
     # parse_qs возвращает списки значений, берём первый элемент
-    data_check_string = "\n".join(
-        f"{k}={v[0]}" for k, v in sorted(parsed.items())
-    )
+    data_check_string = "\n".join(f"{k}={v[0]}" for k, v in sorted(parsed.items()))
 
     # secret_key = HMAC-SHA256("WebAppData", bot_token)
-    secret_key = hmac.new(
-        b"WebAppData", bot_token.encode(), hashlib.sha256
-    ).digest()
+    secret_key = hmac.new(b"WebAppData", bot_token.encode(), hashlib.sha256).digest()
 
     # expected_hash = HMAC-SHA256(secret_key, data_check_string)
-    expected_hash = hmac.new(
-        secret_key, data_check_string.encode(), hashlib.sha256
-    ).hexdigest()
+    expected_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
 
     if not hmac.compare_digest(expected_hash, received_hash):
         return False

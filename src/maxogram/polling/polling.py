@@ -73,7 +73,8 @@ class Polling:
                 break
         logger.info(
             "Dropped %d pending update(s), marker set to %s",
-            total_dropped, self._marker,
+            total_dropped,
+            self._marker,
         )
 
     async def start(self) -> None:
