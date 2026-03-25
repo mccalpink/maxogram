@@ -2,9 +2,10 @@
 
 [![Python](https://img.shields.io/pypi/pyversions/maxogram)](https://pypi.org/project/maxogram/)
 [![PyPI](https://img.shields.io/pypi/v/maxogram)](https://pypi.org/project/maxogram/)
+[![Downloads](https://img.shields.io/pypi/dm/maxogram)](https://pypi.org/project/maxogram/)
+[![CI](https://github.com/mccalpink/maxogram/actions/workflows/ci.yml/badge.svg)](https://github.com/mccalpink/maxogram/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-1487%20passed-brightgreen)]()
-[![mypy](https://img.shields.io/badge/mypy-strict-blue)]()
+[![mypy](https://img.shields.io/badge/mypy-strict-blue)](https://mypy-lang.org/)
 
 Асинхронный Python-фреймворк для [Max Bot API](https://dev.max.ru/), вдохновленный [aiogram](https://github.com/aiogram/aiogram).
 Предоставляет типизированный, расширяемый интерфейс для создания ботов в мессенджере [Max](https://max.ru).
